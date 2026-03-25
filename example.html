@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>青岚湖湿地 - 景区导览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1f2937;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 20px 16px 32px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 图片区域 */
+        .image-container {
+            position: relative;
+            background: #e2e8f0;
+            min-height: 250px;
+        }
+
+        .spot-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 图片占位符（如果没有图片） */
+        .image-placeholder {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2c7a5e, #1e4a3b);
+            color: white;
+            font-size: 64px;
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 24px;
+        }
+
+        /* 语言切换 */
+        .lang-switch {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: #f1f5f9;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #4b5563;
+            font-family: inherit;
+        }
+
+        .lang-btn.active {
+            background: #2c7a5e;
+            color: white;
+        }
+
+        /* 景点名称 */
+        .spot-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 景点描述 */
+        .spot-desc {
+            color: #2d3e50;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 16px 0;
+            text-align: justify;
+            white-space: pre-line;
+        }
+
+        /* 景点信息卡片 */
+        .info-card {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            font-size: 1.25rem;
+            width: 32px;
+            text-align: center;
+        }
+
+        .info-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* 位置信息 */
+        .spot-location {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            color: #475569;
+            margin-top: 8px;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2c7a5e;
+            cursor: pointer;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateX(-4px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 返回按钮（可选） -->
+    <button class="back-button" onclick="history.back()">
+        ← 返回
+    </button>
+
+    <div class="card">
+        <!-- 图片区域 - 请替换为您的图片Base64或网络地址 -->
+        <div class="image-container">
+            <img class="spot-image" id="spotImage" alt="景区图片">
+        </div>
+
+        <div class="content">
+            <!-- 语言切换 -->
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+            </div>
+
+            <!-- 景点名称 -->
+            <div class="spot-name" id="spotName">🏞️ 青岚湖湿地</div>
+
+            <!-- 景点描述 -->
+            <div class="spot-desc" id="spotDesc">
+                碧波荡漾，白鹭翩跹。青岚湖湿地拥有万亩水域与生态栈道，四季皆景，是观鸟、摄影和亲子漫游的理想之地。
+            </div>
+
+            <!-- 详细信息卡片 -->
+            <div class="info-card">
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-text"><span class="info-label">位置</span><br><span id="spotLocation">中国 · 江南水乡</span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">🕐</div>
+                    <div class="info-text"><span class="info-label">开放时间</span><br><span id="spotHours">08:00 - 18:00</span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">🎫</div>
+                    <div class="info-text"><span class="info-label">门票价格</span><br><span id="spotPrice">免费</span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">📞</div>
+                    <div class="info-text"><span class="info-label">咨询电话</span><br><span id="spotPhone">400-123-4567</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        扫码查看 | 景区导览
+    </div>
+</div>
+
+<script>
+    // ========================================
+    // 景区数据配置 - 请根据实际情况修改
+    // ========================================
+    
+    // 图片配置（二选一）：
+    // 1. 使用网络图片（推荐，文件小）："https://example.com/image.jpg"
+    // 2. 使用Base64图片（离线可用）："data:image/jpeg;base64,/9j/4AAQ..."
+    const IMAGE_URL = "https://picsum.photos/500/350?random=1"; // 示例图片，请替换
+    
+    // 景区多语言数据
+    const spotData = {
+        zh: {
+            name: "🏞️ 青岚湖湿地",
+            description: "碧波荡漾，白鹭翩跹。青岚湖湿地拥有万亩水域与生态栈道，四季皆景，是观鸟、摄影和亲子漫游的理想之地。\n\n🌿 特色体验：观鸟平台、生态栈道、游船观光\n✨ 最佳季节：春秋两季",
+            location: "中国 · 江南水乡",
+            hours: "08:00 - 18:00",
+            price: "免费",
+            phone: "400-123-4567"
+        },
+        en: {
+            name: "🏞️ Qinglan Lake Wetland",
+            description: "With rippling blue waves and dancing egrets, Qinglan Lake Wetland features vast water areas and eco-boardwalks. Perfect spot for birdwatching, photography, and family walks.\n\n🌿 Activities: Bird watching, Eco-trails, Boat tours\n✨ Best Season: Spring & Autumn",
+            location: "Jiangnan, China",
+            hours: "08:00 - 18:00",
+            price: "Free",
+            phone: "400-123-4567"
+        }
+    };
+    
+    // 当前语言
+    let currentLang = 'zh';
+    
+    // DOM 元素
+    const spotName = document.getElementById('spotName');
+    const spotDesc = document.getElementById('spotDesc');
+    const spotLocation = document.getElementById('spotLocation');
+    const spotHours = document.getElementById('spotHours');
+    const spotPrice = document.getElementById('spotPrice');
+    const spotPhone = document.getElementById('spotPhone');
+    const spotImage = document.getElementById('spotImage');
+    const langBtns = document.querySelectorAll('.lang-btn');
+    
+    // 设置图片
+    if (IMAGE_URL) {
+        spotImage.src = IMAGE_URL;
+        spotImage.onerror = function() {
+            // 图片加载失败时显示占位符
+            this.style.display = 'none';
+            const placeholder = document.querySelector('.image-placeholder');
+            if (placeholder) placeholder.style.display = 'flex';
+        };
+    }
+    
+    // 更新页面语言
+    function updateLanguage() {
+        const data = spotData[currentLang];
+        spotName.textContent = data.name;
+        spotDesc.textContent = data.description;
+        spotLocation.textContent = data.location;
+        spotHours.textContent = data.hours;
+        spotPrice.textContent = data.price;
+        spotPhone.textContent = data.phone;
+        
+        // 更新按钮样式
+        langBtns.forEach(btn => {
+            const langVal = btn.getAttribute('data-lang');
+            if (langVal === currentLang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // 更新页面标题
+        document.title = data.name + ' - 景区导览';
+    }
+    
+    // 绑定语言切换事件
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const newLang = btn.getAttribute('data-lang');
+            if (newLang === currentLang) return;
+            currentLang = newLang;
+            updateLanguage();
+        });
+    });
+    
+    // 初始化
+    updateLanguage();
+</script>
+</body>
+</html>
